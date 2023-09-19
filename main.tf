@@ -32,7 +32,7 @@ resource "aws_eip" "eip_ngw" {
 resource "aws_nat_gateway" "ngw" {
   count         = length(var.subnets["public"].cidr_block)
   allocation_id = aws_eip.eip_ngw[count.index].id
-  subnet_id     = module.subnets["public"].subnets_id[count.index]
+  subnet_id     = module.subnets["public"].subnets_ids[count.index]
 
   tags          = merge(var.tags, { Name = "${var.env}-ngw-${count.index+1}" })
 }
@@ -51,6 +51,3 @@ resource "aws_route" "ngw" {
   destination_cidr_block = "0.0.0.0/0"
 }
 
-output "subnets" {
-  value = module.subnets
-}
