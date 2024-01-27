@@ -9,8 +9,17 @@ module "subnets" {
 
   for_each   = var.subnets
   vpc_id     = aws_vpc.main.id
-  cidr_block = each.value["cidr_block"]
+  cidr_block = each.value["cidr_blocks"]
   name       = each.value["name"]
-  env        = var.env
+  azs        = each.value["azs"]
 
+  tags = var.tags
+  env  = var.env
+
+}
+
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.main.id
+
+  tags = merge(var.tags, { Name = "${var.env}-igw" })
 }
