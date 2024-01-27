@@ -47,6 +47,10 @@ resource "aws_route" "igw" {
 
 }
 
-output "subnets" {
-  value = module.subnets
+resource "aws_route" "ngw" {
+  count                  = length(local.all_private_route_ids)
+  route_table_id         = local.all_private_route_ids[count.index]
+  nat_gateway_id         = element(aws_nat_gateway.ngw.id, count.index)
+  destination_cidr_block = "0.0.0.0/0"
+
 }
