@@ -40,17 +40,17 @@ resource "aws_nat_gateway" "ngw" {
 }
 
 resource "aws_route" "igw" {
-  count                  = length(module.subnets["public"].route_ids)
-  route_table_id         = module.subnets["public"].route_ids[count.index]
+  count                  = length(module.subnets["public"].route_table_ids)
+  route_table_id         = module.subnets["public"].route_table_ids[count.index]
   gateway_id             = aws_internet_gateway.igw.id
   destination_cidr_block = "0.0.0.0/0"
 
 }
 
 resource "aws_route" "ngw" {
-  count                  = length(local.all_private_route_ids)
-  route_table_id         = local.all_private_route_ids[count.index]
-  nat_gateway_id         = element(aws_nat_gateway.ngw.id, count.index)
+  count                  = length(local.all_private_route_table_ids)
+  route_table_id         = local.all_private_route_table_ids[count.index]
+  nat_gateway_id         = element(aws_nat_gateway.ngw.*.id, count.index)
   destination_cidr_block = "0.0.0.0/0"
 
 }
